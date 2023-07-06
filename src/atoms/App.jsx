@@ -57,9 +57,10 @@ function App() {
             <SearchBar onSubmit={fetchByTitle}  />
           </div>
         </div>
-      
       </div>
-    
+      <div className={s.tv_show_details}>
+        {currentTVShow && <TvShowDetail tvShow={currentTVShow} />}
+      </div>
     </div>
   )
 }
