@@ -8,7 +8,7 @@ const Logo = ({ image, title }) => (
       <span className={s.title}>{title}</span>
     </div>
   </>
-)
+);
 
 Logo.propTypes = {
   image: PropTypes.string,

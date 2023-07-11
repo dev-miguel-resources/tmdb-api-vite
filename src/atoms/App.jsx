@@ -9,15 +9,15 @@ import logoImg from '../assets/images/logo.png'
 import s from './particule/style.module.css'
 
 function App() {
-
   const [currentTVShow, setCurrentTVShow] = useState()
+  const [recommendationList, setRecommendationList] = useState([])
 
   // Normal Version
   async function fetchPopulars() {
-    const popularTVShowList = await TVShowAPI.fetchPopulars();
+    const popularTVShowList = await TVShowAPI.fetchPopulars()
     if (popularTVShowList.length > 0) {
-      setCurrentTVShow(popularTVShowList[0]);
-      console.log(popularTVShowList[0]);
+      setCurrentTVShow(popularTVShowList[0])
+      console.log(popularTVShowList[0])
     }
   }
 
@@ -26,40 +26,65 @@ function App() {
   // Optimized Version with useMemo
 
   async function fetchByTitle(title) {
-    const searchResponse = await TVShowAPI.fetchByTitle(title);
+    const searchResponse = await TVShowAPI.fetchByTitle(title)
     if (searchResponse.length > 0) {
-      setCurrentTVShow(searchResponse[0]);
+      setCurrentTVShow(searchResponse[0])
     }
   }
 
-  useEffect(() => {
-    fetchPopulars();
-  }, []);
+  async function fetchRecommendations(tvShowId) {
+    const recommendationListResponse = await TVShowAPI.fetchRecommendations(
+      tvShowId,
+    )
+    if (recommendationListResponse.length > 0) {
+      setRecommendationList(recommendationListResponse.slice(0, 10))
+    }
+  }
 
+  function updateCurrentTVShow(tvShow) {
+    setCurrentTVShow(tvShow)
+  }
+
+  useEffect(() => {
+    fetchPopulars()
+  }, [])
+
+  useEffect(() => {
+    if (currentTVShow) {
+      fetchRecommendations(currentTVShow.id)
+    }
+  }, [currentTVShow])
 
   return (
     <div
       className={s.main_container}
       style={{
-        background: currentTVShow 
-        ? `linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+        background: currentTVShow
+          ? `linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
         url("${BACKDROP_BASE_URL}${currentTVShow.backdrop_path}") no-repeat center / cover`
-        : "black",
+          : 'black',
       }}
     >
-
       <div className={s.header}>
-        <div className='row'>
-          <div className='col-4'>
+        <div className="row">
+          <div className="col-4">
             <Logo title="WatchShows" image={logoImg} />
           </div>
-          <div className='col-md-12 col-lg-4'>
-            <SearchBar onSubmit={fetchByTitle}  />
+          <div className="col-md-12 col-lg-4">
+            <SearchBar onSubmit={fetchByTitle} />
           </div>
         </div>
       </div>
       <div className={s.tv_show_details}>
         {currentTVShow && <TvShowDetail tvShow={currentTVShow} />}
+      </div>
+      <div className={s.recommended_shows}>
+        {currentTVShow && (
+          <TvShowList
+            onClickItem={updateCurrentTVShow}
+            tvShowList={recommendationList}
+          />
+        )}
       </div>
     </div>
   )
