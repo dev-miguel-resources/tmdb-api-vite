@@ -10,6 +10,7 @@ export default defineConfig({
   preview: { // me permite cambiar el puerto del servidor de prueba pre-productivo
     port: 4270
   },
+  // build options
   build: { // optimizaciones del build para que el código final sea generado de mejor manera
     incremental: true, // acelerar la generación del build
     babel: { // me permite ayudar a babel al reconocimiento del entorno en el cual vas a manipular las versiones del js (opcional)
